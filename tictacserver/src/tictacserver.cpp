@@ -96,6 +96,8 @@ class GameManager
     */
     pair<bool,char> CheckMove(int gameid,int playerid)
     {
+      if((GamePlayers.find(gameid) == GamePlayers.end()) || (Boards.find(gameid) == Boards.end()) || (PlayerData.find(playerid) == PlayerData.end()))
+         return pair<bool,char>(false,'\0');
       if(playerid <=0 || playerid > numOfPlayers)
          return pair<bool,char>(false,'\0');
       if(GamePlayers[gameid][0] == -1 && GamePlayers[gameid][1] == -1)
@@ -164,7 +166,7 @@ class GameManager
                 1: game over, player with index 1 won, 
                 2: game over, draw,
                 3: move not possible. 
-                4. Invalid user tried to make a move
+                4. Invalid user tried to make a move                
     */  
     int makemove(int gameid,int playerid,int row,int col)
     {
@@ -173,8 +175,8 @@ class GameManager
        /* Check the move status, if it is possible */
        pair<bool,char> movestatus = CheckMove(gameid,playerid); /* get X or O according to the playerid */
        if(movestatus.first==false)
-          status = 4;
-       if( (GamePlayers[gameid][3] == -1) && movestatus.first==true && row>=1 && row<=3 && col>=1 && col<=3 && Boards[gameid][row-1][col-1] == '.')
+          status = 4;       
+       else if( (GamePlayers[gameid][3] == -1) && movestatus.first==true && row>=1 && row<=3 && col>=1 && col<=3 && Boards[gameid][row-1][col-1] == '.')
        {        
            Boards[gameid][row-1][col-1] = movestatus.second; /* Put X or O according to the playerid */
            GamePlayers[gameid][2] = playerid; /* The player who played last on this board is playerid, so assign it.*/
@@ -199,16 +201,17 @@ GameManager* GameManager::instance = NULL;
 /* REST API wrappers for the functionalities */
 
 /* Create a new player, and return the id of the new player created */
-int tictacserver::create_new_player()
+string tictacserver::create_new_player()
 {
-   return GameManager::inst()->create_new_player();
+   int playerID = GameManager::inst()->create_new_player();
+   return "Successfully created New Player. Player ID:"+to_string(playerID);
 }
 
 /* Create a new game, and return the id of the new player created */
 string tictacserver::create_new_game()
 {
    int gameid = GameManager::inst()->CreateNewGame();
-   return "Successfully created New Game ID:"+to_string(gameid);
+   return "Successfully created New Game. Game ID:"+to_string(gameid);
 }
 
 /* Get the ids and won games for all players */
@@ -224,7 +227,7 @@ string tictacserver::move(int gameid,int playerid,int row,int col)
   cout<<"\n Request received for move. GameId: "<<gameid<<" PlayerId: "<<playerid<<" Row: "<<row<<" Column: "<<col;
   int status = GameManager::inst()->makemove(gameid,playerid,row,col);
   if(status==4)
-     responsemessage = "Invalid Player "+ to_string(playerid) +" tried to make a move";
+     responsemessage = "Invalid Move by Player: "+to_string(playerid)+" for Game: "+to_string(gameid);
   if(status==3)
      responsemessage = "Sorry, invalid move given by player ID: "+ to_string(playerid);
   if(status==2)

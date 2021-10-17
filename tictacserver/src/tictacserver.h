@@ -31,7 +31,7 @@ public:
 
     // *method: POST
     // *location: /newplayer
-    int create_new_player();
+    std::string create_new_player();
 
     // *method: POST
     // *location: /createnewgame

@@ -4,7 +4,6 @@ t.get_games()
 t.get_player()
 
 
-
 t.Postgamemove("11","17","1","1")
 t.get_gamestatus()
 t.Postgamemove("12","17","1","1")
