@@ -6,11 +6,11 @@
 wget -qO- http://bit.ly/ngrest | bash
 
 # Step 2: Setup the project
-git clone https://github.com/joker2904/ngrest_tictactoe_server.git
-cd ngrest_tictactoe_server
+# git clone https://github.com/joker2904/ngrest_tictactoe_server.git
+# cd ngrest_tictactoe_server
 
 # Step 3: Build the project and deploy it locally
-ngrest
+# ngrest
 
 # Server is up and running
 
