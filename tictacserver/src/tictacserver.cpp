@@ -223,17 +223,17 @@ unordered_map<int,int> tictacserver::GetPlayerInfo()
 /* make a move for a particular game */
 string tictacserver::move(int gameid,int playerid,int row,int col)
 {
-  string responsemessage ="Correctly Played by Player ID "+to_string(playerid);
+  string responsemessage ="Correctly Played by Player ID "+to_string(playerid)+" for Game ID: "+to_string(gameid);
   cout<<"\n Request received for move. GameId: "<<gameid<<" PlayerId: "<<playerid<<" Row: "<<row<<" Column: "<<col;
   int status = GameManager::inst()->makemove(gameid,playerid,row,col);
   if(status==4)
      responsemessage = "Invalid Move by Player: "+to_string(playerid)+" for Game: "+to_string(gameid);
   if(status==3)
-     responsemessage = "Sorry, invalid move given by player ID: "+ to_string(playerid);
+     responsemessage = "Sorry, invalid move given by player ID: "+to_string(playerid)+" for Game: "+to_string(gameid);;
   if(status==2)
-     responsemessage = "Game over, Draw";
+     responsemessage = "Game ID: "+to_string(gameid)+" over, Draw";
   if(status==1 || status==0)
-     responsemessage = "Game over, Player "+to_string(GameManager::inst()->GetPlayerFromGame( gameid,status ))+" has won.";
+     responsemessage = "Game ID: "+to_string(gameid)+" over, Player "+to_string(GameManager::inst()->GetPlayerFromGame( gameid,status ))+" has won.";
   cout<<"\n Sending response :"<<responsemessage;
   return responsemessage;
 }
