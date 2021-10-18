@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <vector>
 #include <utility>
-//! Dummy description for the service
+
 /*! Some detailed description of the service */
 // '*location' comment sets resource path for this service
 // *location: tictacserver

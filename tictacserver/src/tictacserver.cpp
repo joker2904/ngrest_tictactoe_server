@@ -10,7 +10,9 @@
 
 using namespace std;
 
-/* singleton class to manage the game and players */
+/* 
+   This class manages all the games and players in a distributed environment. It is based on Singleton class pattern, to manage the game and players from multiple connections .
+*/
 class GameManager
 {
   private:
@@ -18,11 +20,11 @@ class GameManager
     int numOfGames;
     mutex mutex_player_operation;   
     mutex mutex_game_operation;    
-    vector<mutex> game_lock;
-    vector<mutex> player_lock;
-    unordered_map<int, vector<vector<char>> > Boards;
-    unordered_map<int,int> PlayerData;
-    unordered_map<int, vector<int> > GamePlayers;
+    vector<mutex> game_lock; // This is a dummy for distributed lock which is unused as of now 
+    vector<mutex> player_lock; // This is a dummy for distributed lock which is unused as of now 
+    unordered_map<int, vector<vector<char>> > Boards; // A map containing game id as key and correspong game board. Each game board is a 3x3 array of Char.
+    unordered_map<int,int> PlayerData; // A map containing player-id as key and corresponding win scores as value
+    unordered_map<int, vector<int> > GamePlayers; //  A map containing game id as key and correspong game state variables ( players playing the game, game status and winner 
     
     GameManager()
     {
@@ -93,6 +95,8 @@ class GameManager
     /*  check if move is possible for this board, by playerid. 
         Assign X or O to current position.
         The Gameplayers 0th index will badge a X, and GamePlayers 1th index will badge a O.  
+        Params : Game Id and Player Id
+        Returns : A pair of bool ( indicating whether the player is valid for this move ) and the character ( X/O/null) . 
     */
     pair<bool,char> CheckMove(int gameid,int playerid)
     {
@@ -102,14 +106,12 @@ class GameManager
          return pair<bool,char>(false,'\0');
       if(GamePlayers[gameid][0] == -1 && GamePlayers[gameid][1] == -1)
       {
-        GamePlayers[gameid][0] = playerid;
-        //GamePlayers[gameid][2] = playerid;
+        GamePlayers[gameid][0] = playerid;        
         return pair<bool,char>(true,'X');
       }
       if(GamePlayers[gameid][0] > -1 && GamePlayers[gameid][1] == -1 && playerid != GamePlayers[gameid][2])
       {
-        GamePlayers[gameid][1] = playerid;
-        //GamePlayers[gameid][2] = playerid;
+        GamePlayers[gameid][1] = playerid;        
         return pair<bool,char>(true,'O');
       }
       if(GamePlayers[gameid][0] > -1 && 
@@ -117,8 +119,7 @@ class GameManager
          (playerid == GamePlayers[gameid][0] || playerid == GamePlayers[gameid][1]) &&
           playerid != GamePlayers[gameid][2]
         )
-      {
-        //GamePlayers[gameid][2] = playerid;
+      {        
         char move;
         if(GamePlayers[gameid][0] == playerid)
            move = 'X';
@@ -129,7 +130,9 @@ class GameManager
       return pair<bool,char>(false,'\0');
     }
 
-    /* Check the game status on the board. If it is a win the return winner index. If draw, return 2. If it is a normal move return -1 */
+    /* Check the game status on the board for all possible configurations. 
+      Returns : If it is a win config, the winner index is returned. If draw, return 2. If it is a normal move return -1 
+    */
     int CheckGameBoardStatus(int gameid,char playermove)
     {
       int playerindex = (playermove=='X')? 0:1;
@@ -194,6 +197,8 @@ class GameManager
        return status;
     }    
 };
+
+/* The member function definations for the ngrest class , which hosts the REST APIs. The ngrest class is basicallly a wrapper over the GameManager class */
 
 /* Initialize the static member */
 GameManager* GameManager::instance = NULL;

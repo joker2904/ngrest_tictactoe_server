@@ -1,18 +1,14 @@
 # importing the requests library
 import requests
 
+# These APIs simulate a dummy client which call the REST APIs defined and hosted by ngrest
+# The files play*.py use these APIs and simulate games and use cases.
+
 def Postgamemove(gameid,playerid,row,col):
 	# defining the api-endpoint	
 	API_ENDPOINT = " http://localhost:9098/tictacserver/makeamove/"+gameid+"/"+playerid+"/"+row+"/"+col
 	# data to be sent to api
 	data = {}
-	'''
-		"playerid" : playerid,
-		"row" : row,
-                "col" : col
-               }
-	print(data)
-	'''
 	# sending post request and saving response as response object
 	r = requests.post(url = API_ENDPOINT, data = data)
 	# extracting response text	
